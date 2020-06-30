@@ -2,5 +2,5 @@
 .project
 .settings/*
 Default/MultiMap
-Default/*.d
-Default/*.o
+Default/src/*.d
+Default/src/*.o
