@@ -1,0 +1,6 @@
+.cproject
+.project
+.settings/*
+Default/MultiMap
+Default/*.d
+Default/*.o
