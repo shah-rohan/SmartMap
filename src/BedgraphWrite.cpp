@@ -14,6 +14,8 @@ void writeBedgraphOutput(string bedgraph_filename)
 {
 	ogzstream bedgraph_file(bedgraph_filename.c_str());
 
+	bedgraph_file << fixed << setprecision(2);
+
 	for (unsigned int chromindex = 0; chromindex < tree1.size(); chromindex++)
 	{
 		string chromname = counter_to_chrom[chromindex];
@@ -25,7 +27,7 @@ void writeBedgraphOutput(string bedgraph_filename)
 		for (int i = 2; i <= chromlength; i++)
 		{
 			float newval = treeSum(tree1[chromindex], i);
-			if (newval < 1e-6) { newval = 0; }
+			if (newval < 1e-2) { newval = 0; }
 			if (storedval == newval)
 			{
 				continue;
