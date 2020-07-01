@@ -99,6 +99,13 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 		else { reweight_prefix = reweight_prefix + "_" + to_string(crossval) + "-fold-sans-" + to_string(cval+1); }
 	}
 
+	if (contout)
+	{
+		outlog << "Writing bedgraph for iteration 0\n\n";
+		string filename = reweight_prefix + "_iteration-0.bedgraph.gz";
+		writeBedgraphOutput(filename);
+	}
+
 	//Runs the reweight iterator function
 	reweightIterator(iterations, fixation, reweight_prefix, contout);
 
