@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//Write the bedgraph output as a compressed bedgraph file with 2 decimal fixed precision. Note: Only requires tree1.
 void writeBedgraphOutput(string bedgraph_filename)
 {
 	ogzstream bedgraph_file(bedgraph_filename.c_str());

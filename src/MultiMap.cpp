@@ -35,6 +35,8 @@ map<string, int> chrom_to_counter;
 vector<string> counter_to_chrom;
 vector<int> counter_to_length;
 
+//Off-the-shelf solution to check whether the filename ends with the extension
+
 bool hasEnding(const string& filename, const string& extension)
 {
 	if (filename.length() >= extension.length())
@@ -47,10 +49,15 @@ bool hasEnding(const string& filename, const string& extension)
 	}
 }
 
+//Manages the procedure from reading the read files, running the iterator program, and bedgraph output, adjusting if this is part of a cross-validation.
+
 void readThroughBedgraph(const vector<string> rfils, int iterations, float fixation, string output_prefix, float score_min, int crossval, int cval, bool contout, bool cross, bool onsa, int maxaligns)
 {
 	string read_ids = "";
+
+	//id_counter serves to keep track of the available index of the reads vector so we don't have to keep calling size; initially set to 0 in the parser.
 	int id_counter = -1;
+	//raw_counter keeps track of the number of reads that we have parsed through, mostly for the purposes of cross-validation apportionment.
 	int raw_counter = 0;
 
 	for (unsigned int fils = 0; fils < rfils.size(); fils++)
@@ -58,10 +65,12 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 		outlog << "Now parsing read file " << rfils[fils] << "\n";
 		auto start = high_resolution_clock::now();
 
+		//Check if the file ends with ".gz" i.e. whether it is a compressed file or not.
 		bool checkgz = hasEnding(rfils[fils], ".gz");
 
 		if (checkgz)
 		{
+			//Using igzstream and appropriate function if compressed file.
 			igzstream reads_file(rfils[fils].c_str());
 			if (!reads_file) { cerr << "File " << rfils[fils] << " could not be opened for reading."; return; }
 			parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa);
@@ -69,6 +78,7 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 		}
 		else
 		{
+			//Using ifstream and appropriate function if not compressed file.
 			ifstream reads_file(rfils[fils]);
 			if (!reads_file) { cerr << "File " << rfils[fils] << " could not be opened for reading."; return; }
 			parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa);
@@ -81,6 +91,7 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 	}
 	read_ids.clear();
 
+	//reweight_prefix is going to be used for bedgraph files, including continuous output and/or final output.
 	string reweight_prefix = output_prefix;
 	if (cross)
 	{
@@ -88,8 +99,10 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 		else { reweight_prefix = reweight_prefix + "_" + to_string(crossval) + "-fold-sans-" + to_string(cval+1); }
 	}
 
+	//Runs the reweight iterator function
 	reweightIterator(iterations, fixation, reweight_prefix, contout);
 
+	//Assesses whether a continous output iteration would have already output the final bedgraph, in which case final writing can be skipped
 	bool finalwrite = iterations < 10 || iterations % 10 == 0;
 
 	if (!contout || !finalwrite)
@@ -162,8 +175,9 @@ int main(int argc, char* argv[])
 	string logfile_name = output_prefix + ".log";
 	ofstream logfile;
 	logfile.open(logfile_name);
-
 	outlog.logfile = &logfile;
+
+	//Parse some of the command line options to make more sense upon output to terminal and logfile.
 
 	string minscr;
 	if (score_min==0) { minscr = "UNSCORED"; }
@@ -195,7 +209,7 @@ int main(int argc, char* argv[])
 	outlog << "Length file parsed.\n\n";
 	length_file.close();
 
-	//Parse the reads file
+	//Store the list of reads files in vector rfils so it can be accessed later, multiple times if needed.
 
 	vector< string > rfils;
 
@@ -204,28 +218,35 @@ int main(int argc, char* argv[])
 		rfils.push_back(argv[fils]);
 	}
 
+	//Represents whether cross-validation is in effect
 	bool cross = crossval > 1;
+
+	//Represents whether the analysis will be "only" or "sans" the cval index
 	bool onsa;
 
 	for (int cval = 0; cval < crossval; cval++)
 	{
+		//Only outputs the message if crossval > 1, if there is n-fold cross-validation
 		if (cross) { outlog << "Beginning cross-validation WITH ONLY section " << to_string(cval+1) << " of " << to_string(crossval) << ".\n\n"; }
 
+		//After the first iteration, need to clear the reads and chromosome vectors as below.
 		if (cval > 0)
 		{
 			outlog << "Clearing reads vector.\n";
-                        reads_vector.clear();
+			reads_vector.clear();
 
-                        outlog << "Clearing chromosome vectors.\n\n";
-                        for (unsigned int chromindex = 0; chromindex < tree1.size(); chromindex++)
-                        {
-                                fill(tree1[chromindex].begin(), tree1[chromindex].end(), 0);
-                                fill(tree2[chromindex].begin(), tree2[chromindex].end(), 0);
-                        }
+			outlog << "Clearing chromosome vectors.\n\n";
+			for (unsigned int chromindex = 0; chromindex < tree1.size(); chromindex++)
+			{
+					fill(tree1[chromindex].begin(), tree1[chromindex].end(), 0);
+					fill(tree2[chromindex].begin(), tree2[chromindex].end(), 0);
+			}
 		}
+
 		onsa = true;
 		readThroughBedgraph(rfils, iterations, fixation, output_prefix, score_min, crossval, cval, contout, cross, onsa, maxaligns);
 
+		//No need to run through a sans analysis unless there is n-fold cross-validation
 		if (cross)
 		{
 			outlog << "Beginning cross-validation WITHOUT section " << to_string(cval+1) << " of " << to_string(crossval) << ".\n\n";

@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//Assigns probability of correct alignment as per the AS: and YS: scores from Bowtie2 as if the map was a uniread based on MAPQ.
 float probMap(int score, float score_min)
 {
 	if (score_min == 0) { return 1; } // Switches off probability
@@ -24,10 +25,12 @@ float probMap(int score, float score_min)
 	else { return 0; } // MAPQ = 0
 }
 
+//Software for the end of a read
 void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 {
 	int nummaps = reads_vector[id_counter].size();
 
+	//If the number of maps processed in that read is greater than the number of maximum allowable number of maps, remove the read and decrement id_counter
 	if (numaligns > maxaligns)
 	{
 		reads_vector.pop_back();
@@ -39,6 +42,7 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 	{
 		float probsum = 0;
 
+		//Sum of the probabilities of the maps for that read
 		for (int i = 0; i < nummaps; i++)
 		{
 			probsum += reads_vector[id_counter][i].prob;
@@ -46,6 +50,7 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 
 		if (probsum > 0)
 		{
+			//For each of those maps, assign the weight as the probability divided by the sum of probabilities over the read and  add to the trees.
 			for (int i = 0; i < nummaps; i++)
 			{
 				readMap tempread = reads_vector[id_counter][i];
@@ -56,6 +61,7 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 		}
 	}
 
+	//Fixed reads: Don't need them in the array, so just remove the read and decrement id_counter. Add 1 to fixed number if there was 1 map, 0 if 0 maps.
 	if (nummaps == 1 || nummaps == 0)
 	{
 		reads_vector.pop_back();
@@ -64,6 +70,7 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 	}
 }
 
+//Add a new vector to the reads_vector and increment id_counter to analyze the next read.
 void nextRead(int& id_counter)
 {
 	vector<readMap> new_read_vector;
@@ -71,6 +78,7 @@ void nextRead(int& id_counter)
 	id_counter++;
 }
 
+//Read parser function for compressed files.
 void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa)
 {
 	string chrom;
@@ -79,6 +87,14 @@ void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, in
 	int not_added_fix = 0;
 	int not_added_prob = 0;
 	int numaligns = 0;
+	/* Cross-validation functionality is sufficiently complex that it deserves a dedicated explanation here.
+	 * To determine whether a read needs to be added, checkadd is computed at the detection of a read ID for the beginning of the next read (or first read).
+	 * checkadd is true under one of the three conditions: no cross-validation, modulus matching cval in "only" mode, or modulus not matching cval in "sans" mode.
+	 * If checkadd was true for the previous read, then the previous read is added to the chromosome trees and a new read is added.
+	 * If checkadd is not true, then there's no need to add a new read vector, and the previous read will be processed with the next read for which checkadd is true.
+	 * Either way, the raw_counter is incremented. For this read, values are only added to the latest vector if checkadd is true.
+	 * If checkadd was false at the end of the while loop (end of reads), then the last read didn't get added to the trees, so it is added with endRead after loop. */
+
 	bool checkadd;
 
 	while (reads_file >> chrom >> start >> stop >> read_str >> as_str >> ys_str)
@@ -102,11 +118,13 @@ void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, in
 
 		if(checkadd)
 		{
+			//Remove the AS:i: and the YS:i: from the scores, respectively.
 			as_str.erase(0, 5);
 			ys_str.erase(0, 5);
 			as = stoi(as_str);
 			ys = stoi(ys_str);
 
+			//Check the probability of the map being accurately aligned; if zero, then it will always have weight 0, so just remove the map.
 			float pm = probMap(as + ys, score_min);
 			if (pm > 0)
 			{
@@ -133,6 +151,14 @@ void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int
 	int not_added_fix = 0;
 	int not_added_prob = 0;
 	int numaligns = 0;
+		/* Cross-validation functionality is sufficiently complex that it deserves a dedicated explanation here.
+		 * To determine whether a read needs to be added, checkadd is computed at the detection of a read ID for the beginning of the next read (or first read).
+		 * checkadd is true under one of the three conditions: no cross-validation, modulus matching cval in "only" mode, or modulus not matching cval in "sans" mode.
+		 * If checkadd was true for the previous read, then the previous read is added to the chromosome trees and a new read is added.
+		 * If checkadd is not true, then there's no need to add a new read vector, and the previous read will be processed with the next read for which checkadd is true.
+		 * Either way, the raw_counter is incremented. For this read, values are only added to the latest vector if checkadd is true.
+		 * If checkadd was false at the end of the while loop (end of reads), then the last read didn't get added to the trees, so it is added with endRead after loop. */
+
 	bool checkadd;
 
 	while (reads_file >> chrom >> start >> stop >> read_str >> as_str >> ys_str)
@@ -156,11 +182,13 @@ void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int
 
 		if(checkadd)
 		{
+			//Remove the AS:i: and the YS:i: from the scores, respectively.
 			as_str.erase(0, 5);
 			ys_str.erase(0, 5);
 			as = stoi(as_str);
 			ys = stoi(ys_str);
 
+			//Check the probability of the map being accurately aligned; if zero, then it will always have weight 0, so just remove the map.
 			float pm = probMap(as + ys, score_min);
 			if (pm > 0)
 			{

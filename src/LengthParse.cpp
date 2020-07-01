@@ -9,6 +9,7 @@
 
 using namespace std;
 
+//Parse the length file into map and vector to associate chromosome to counter, chromosome lengths, and add to the trees
 void parseLengthFile(ifstream& length_file)
 {
 	string chrom;
