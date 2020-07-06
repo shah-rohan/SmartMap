@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+pcores=1
+kfilt=51
+L=250
+I=100
+s=""
+helpmessage="\nMultiMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]
+
+Inputs (required):
+-x Path to basename of Bowtie2 index for alignment
+-o Output prefix prepended to the output files
+-1 Fastq file for read mate 1 (can be gzipped)
+-2 Fastq file for read mate 2 (can be gzipped)
+
+Options:
+-p Number of CPU threads to be used for multithreaded alignment (default: $pcores)
+-I Minimum insert length (default: $I)
+-L Maximum insert length (default: $L)
+-k Maximum number of alignments reported (default: $kfilt)
+-s String to be removed from read names\n\n"
+
+while getopts "p:x:1:2:L:k:o:I:s:h" opt; do
+	case $opt in
+		p) pcores=$OPTARG;;
+		x) btindex=$OPTARG;;
+		1) R1fq=$OPTARG;;
+		2) R2fq=$OPTARG;;
+		L) L=$OPTARG;;
+		k) kfilt=$OPTARG;;
+		o) outp=$OPTARG;;
+		I) I=$OPTARG;;
+		s) s=$OPTARG;;
+		h) printf "$helpmessage"
+		   exit;;
+	esac
+done
+
+outprefix=${outp}
+outname=$outprefix"_vf_k"$kfilt"_I"$I"_X"$L"_filt-flag_filt-coord_scores.bed"
+splitpref=$outprefix"_vf_k"$kfilt"_I"$I"_X"$L"_filt-flag_filt-coord_scores"
+
+bowtie2 -p $pcores -x $btindex --end-to-end --very-fast --no-discordant --no-mixed -k $kfilt -I $I -X $L -1 $R1fq -2 $R2fq | awk '$2==99 || $2==163 || $2==355 || $2==419{as = ""; ys = ""; for (i=12; i<=NF; i++){if ($i ~/^AS/){as = $i} if ($i ~/^YS/){ys = $i; break}} print $3"\t"$4"\t"$4+$9-1"\t"$1"\t"as"\t"ys}' | awk '$2>0 && $3>$2 && $5~/^AS:i:/ && $6~/^YS:i:/{print}' | sed -e "s/$s//g" > $outname
+
+awk -v pref=$splitpref '{if ($4==storedval){a++; b[a] = $0; next} for (i in b){print b[i] > "splits/"pref"_map-"a".bed"} delete b; a = 1; b[a] = $0;; storedval = $4} END {for (i in b){print b[i] > "splits/"pref"_map-"a".bed"}}' $outname && gzip $outname
