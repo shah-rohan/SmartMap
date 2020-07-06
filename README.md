@@ -18,17 +18,19 @@ We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above 
 
 ### Manual for MultiMapPrep
 
-MultiMapPrep \[options\] -x \[Bowtie2 index\] -o \[output prefix\] -1 \[R1 fastq\] -2 \[R2 fastq\]
+`MultiMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]`
 
 Inputs (required):
--x Path to basename of Bowtie2 index for alignment
--o Output prefix prepended to the output files
--1 Fastq file for read mate 1 (can be gzipped)
--2 Fastq file for read mate 2 (can be gzipped)
+
+-x Path to basename of Bowtie2 index for alignment\
+-o Output prefix prepended to the output files\
+-1 Fastq file for read mate 1 (can be gzipped)\
+-2 Fastq file for read mate 2 (can be gzipped)\
 
 Options:
--p Number of CPU threads to be used for multithreaded alignment (default: 1)
--I Minimum insert length (default: 100)
--L Maximum insert length (default: 250)
--k Maximum number of alingments reported (default: 51)
--s String to be removed from read names
+
+-p Number of CPU threads to be used for multithreaded alignment (default: 1)\
+-I Minimum insert length (default: 100)\
+-L Maximum insert length (default: 250)\
+-k Maximum number of alingments reported (default: 51)\
+-s String to be removed from read names\
