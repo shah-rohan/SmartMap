@@ -8,7 +8,7 @@ This tool is designed for use with Bowtie2.
 
 ## Documentation for MultiMapPrep
 
-This tool will take as inputs the paired-end FastQ files and the Bowtie2 index for the genome to which the reads will be aligned. The outputs will be a GZipped BED file, containing the alignments with alignment scores; and a directory containing BED files of each alignment with alignment scores, divided by the number of alignments reported fore each read.
+This tool will take as inputs the paired-end FastQ files and the Bowtie2 index for the genome to which the reads will be aligned. The outputs will be a GZipped BED file, containing the alignments with alignment scores; and a directory containing BED files of each alignment with alignment scores, divided by the number of alignments reported for each read.
 
 In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.
 
@@ -25,7 +25,7 @@ Inputs (required):
 -x Path to basename of Bowtie2 index for alignment\
 -o Output prefix prepended to the output files\
 -1 Fastq file for read mate 1 (can be gzipped)\
--2 Fastq file for read mate 2 (can be gzipped)\
+-2 Fastq file for read mate 2 (can be gzipped)
 
 Options:
 
@@ -33,4 +33,4 @@ Options:
 -I Minimum insert length (default: 100)\
 -L Maximum insert length (default: 250)\
 -k Maximum number of alingments reported (default: 51)\
--s String to be removed from read names\
+-s String to be removed from read names
