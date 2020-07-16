@@ -43,17 +43,17 @@ The MultiMapPrep script is used to align the FastQ files and prepare a BED file 
   * No mixed alignments (single-end alignments if paired-end alignment cannot be found)
   * Report up to *k* alignments per read pair (default 51)
   * Insert size between *I* to *L* base pairs (default 100-250 bp)
-2. Filterong for reads with one of the following SAM flags:
+1. Filtering for reads with one of the following SAM flags:
   * 99 (read paired, mapped in a proper pair, mate reverse strand, first in pair, primary alignment)
   * 163 (read paired, mapped in a proper pair, mate reverse strand, second in pair, primary alignment)
   * 355 (read paired, mapped in a proper pair, mate reverse strand, first in pair, not primary alignment)
   * 419 (read paired, mapped in a proper pair, mate reverse strand, second in pair, not primary alignment)
-3. Extracting into an extended BED file:
+1. Extracting into an extended BED file:
   * Chromosome
   * Start position
   * End position
   * Read alignment score (AS:i:)
   * Mate alignment score (YS:i:)
-4. Split the reads into separate files based on the number of alignments per read.
+1. Split the reads into separate files based on the number of alignments per read.
 
 The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
