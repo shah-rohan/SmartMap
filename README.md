@@ -8,6 +8,8 @@ This tool is designed for use with Bowtie2.
 
 ## Documentation for MultiMapPrep
 
+### Description
+
 The MultiMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:
 
 1. Aligning the FastQ files to the genome using Bowtie2 using the following settings:
@@ -30,6 +32,8 @@ The MultiMapPrep script is used to align the FastQ files and prepare a BED file 
 4. Split the reads into separate files based on the number of alignments per read.
 
 The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
+
+### Dependencies
 
 In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.
 
