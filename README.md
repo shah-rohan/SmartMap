@@ -8,7 +8,28 @@ This tool is designed for use with Bowtie2.
 
 ## Documentation for MultiMapPrep
 
-This tool will take as inputs the paired-end FastQ files and the Bowtie2 index for the genome to which the reads will be aligned. The outputs will be a GZipped BED file, containing the alignments with alignment scores; and a directory containing BED files of each alignment with alignment scores, divided by the number of alignments reported for each read.
+The MultiMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:
+
+1. Aligning the FastQ files to the genome using Bowtie2 using the following settings:
+   * End-to-end alignment with very fast preset
+   * No discordant alignments
+   * No mixed alignments (single-end alignments if paired-end alignment cannot be found)
+   * Report up to *k* alignments per read pair (default 51)
+   * Insert size between *I* to *L* base pairs (default 100-250 bp)
+2. Filtering for reads with one of the following SAM flags:
+   * 99 (read paired, mapped in a proper pair, mate reverse strand, first in pair, primary alignment)
+   * 163 (read paired, mapped in a proper pair, mate reverse strand, second in pair, primary alignment)
+   * 355 (read paired, mapped in a proper pair, mate reverse strand, first in pair, not primary alignment)
+   * 419 (read paired, mapped in a proper pair, mate reverse strand, second in pair, not primary alignment)
+3. Extracting into an extended BED file:
+   * Chromosome
+   * Start position
+   * End position
+   * Read alignment score (AS:i:)
+   * Mate alignment score (YS:i:)
+4. Split the reads into separate files based on the number of alignments per read.
+
+The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
 
 In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.
 
@@ -35,25 +56,4 @@ Options:
 -k Maximum number of alingments reported (default: 51)\
 -s String to be removed from read names
 
-The MultiMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:
-
-1. Aligning the FastQ files to the genome using Bowtie2 using the following settings:
-   * End-to-end alignment with very fast preset
-   * No discordant alignments
-   * No mixed alignments (single-end alignments if paired-end alignment cannot be found)
-   * Report up to *k* alignments per read pair (default 51)
-   * Insert size between *I* to *L* base pairs (default 100-250 bp)
-2. Filtering for reads with one of the following SAM flags:
-   * 99 (read paired, mapped in a proper pair, mate reverse strand, first in pair, primary alignment)
-   * 163 (read paired, mapped in a proper pair, mate reverse strand, second in pair, primary alignment)
-   * 355 (read paired, mapped in a proper pair, mate reverse strand, first in pair, not primary alignment)
-   * 419 (read paired, mapped in a proper pair, mate reverse strand, second in pair, not primary alignment)
-3. Extracting into an extended BED file:
-   * Chromosome
-   * Start position
-   * End position
-   * Read alignment score (AS:i:)
-   * Mate alignment score (YS:i:)
-4. Split the reads into separate files based on the number of alignments per read.
-
-The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
+-h Display help message
