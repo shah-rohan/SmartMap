@@ -33,8 +33,15 @@ while getopts "p:x:1:2:L:k:o:I:s:h" opt; do
 		s) s=$OPTARG;;
 		h) printf "$helpmessage"
 		   exit;;
+		?) printf "$helpmessage"
+                   exit;;
 	esac
 done
+
+if [ $OPTIND -eq 1 ]; then
+	printf "$helpmessage"
+	exit
+fi
 
 outprefix=${outp}
 outname=$outprefix"_vf_k"$kfilt"_I"$I"_X"$L"_filt-flag_filt-coord_scores.bed"
