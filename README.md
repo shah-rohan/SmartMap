@@ -1,4 +1,4 @@
-# MultiMap: Iterative Bayesian Analysis of Ambiguously Mapped Reads in ChIP-seq
+# MultiMap: Iterative Bayesian Analysis of Ambiguously Mapped Reads
 
 This tool is designed to analyze ambiguously mapped reads from paired-end short-read next-generation sequencing by using the alignment scores and the distribution of mapped reads genome-wide to iteratively reweight and refine the weights assigned to each alignment of each read. This tool is primarily intended for and validated on ChIP-seq and simulated ChIP-seq data; however, in principle, this tool can be used for DNA-seq and other selected NGS applications more broadly. Furthermore, this tool was primarily devised to analyze ICeChIP-seq data; however, this tool does not itself perform ICeChIP-specific analyses and can therefore be used more broadly for ChIP-seq.
 
@@ -61,3 +61,52 @@ Options:
 -s String to be removed from read names
 
 -h Display help message
+
+## Documentation for MultiMap
+
+The MultiMap software serves to assign weights to each mapping of each read by an iterative Bayesian reweighting algorithm using the BED file(s) outputted by the MultiMapPrep script as an input. The output file is a Gzipped BEDGRAPH file of the genome-wide read weights analagous to a genome coverage read depth BEDGRAPH file.
+
+### Dependencies
+
+The MultiMap binary has no dependencies in and of itself; however, building the MultiMap binary from source requires the following to be installed and added to the PATH environment variable.
+
+* g++
+
+Additionally, the [gzstream](https://www.cs.unc.edu/Research/compgeom/gzstream/) library is required for building the MultiMap binary; this is included in the appropriate relative directory with the appropriate reference in the makefile. 
+
+We have tested this software on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested g++ v. 7.5.0. 
+
+### Building MultiMap binary from source
+
+The source files for the MultiMap software are provided here. To build the MultiMap binary from source, first navigate to the "Default" directory. Once in the "Default" directory, run the following command:
+
+`make all`
+
+The MultiMap binary will appear in the "Default" directory. It can then be moved to the directory of interest or added to the PATH environment variable for use.
+
+### Manual for MultiMap 
+
+`MultiMap [options] -g [genome length file] -o [output prefix] [BED or BED.gz file input(s)]`
+
+Inputs (required):
+
+-g : Genome length file listing all chromosomes and lengths. Chromosomes will appear in this order in the output BEDGRAPH file.\
+-o : Output prefix used for output BEDGRAPH and log files.\
+Input files: Path to BED or BED.gz files, separated by spaces. Must be the last argument(s) passed to the software.
+
+Options:
+
+-i : Number of iterations. Default 1.\
+-x : Fixation percentage threshold. Default 0.\
+-m : Maximum number of alignments for a read to be processed. Default 50.\
+-s : Minimum score for Bowtie2 display. Default 0 (unscored).\
+-v : N for N-fold cross-validation. Default 1 (no cross-validation).\
+-c : Flag for continuous output bedgraphs. Default off.
+
+-h : Display help message.
+
+## Acknowledgments and Contact
+
+The MultiMapPrep and MultiMap tools were designed and written by Rohan Shah (rohanshah@uchicago.edu).
+
+Contact Rohan Shah (rohanshah@uchicago.edu) or Alex Ruthenburg (aruthenburg@uchicago.edu) with questions, comments, or issues.
