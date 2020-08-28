@@ -55,7 +55,14 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 			{
 				readMap tempread = reads_vector[id_counter][i];
 				int chromindex = tempread.chrom;
-				rangeUpdate(tree1[chromindex], tree2[chromindex], tempread.start, tempread.stop, tempread.prob / probsum, counter_to_length[chromindex]);
+				if (tempread.strand)
+				{
+					rangeUpdate(tree1[chromindex], tree2[chromindex], tempread.start, tempread.stop, tempread.prob / probsum, counter_to_length[chromindex]);
+				}
+				else
+				{
+					rangeUpdate(tree1neg[chromindex], tree2neg[chromindex], tempread.start, tempread.stop, tempread.prob / probsum, counter_to_length[chromindex]);
+				}
 				reads_vector[id_counter][i].weight = tempread.prob / probsum;
 			}
 		}
@@ -128,7 +135,7 @@ void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, in
 			float pm = probMap(as + ys, score_min);
 			if (pm > 0)
 			{
-				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0 , pm };
+				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm, true };
 				reads_vector[id_counter].push_back(new_read_map);
 			}
 			else { not_added_prob++; }
@@ -193,7 +200,143 @@ void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int
 			float pm = probMap(as + ys, score_min);
 			if (pm > 0)
 			{
-				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0 , pm };
+				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , true};
+				reads_vector[id_counter].push_back(new_read_map);
+			}
+			else { not_added_prob++; }
+
+			numaligns++;
+		}
+	}
+
+	if (!checkadd) { endRead(id_counter, not_added_fix, numaligns, maxaligns); }
+
+	outlog << "Not added due to low map quality: " << not_added_prob << "\n";
+	outlog << "Not added due to fixation: " << not_added_fix << "\n";
+}
+
+void parseReadsFileStranded(igzstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa)
+{
+	string chrom;
+	int start, stop, as, ys;
+	string read_str, as_str, ys_str, strand_str;
+	int not_added_fix = 0;
+	int not_added_prob = 0;
+	int numaligns = 0;
+		/* Cross-validation functionality is sufficiently complex that it deserves a dedicated explanation here.
+		 * To determine whether a read needs to be added, checkadd is computed at the detection of a read ID for the beginning of the next read (or first read).
+		 * checkadd is true under one of the three conditions: no cross-validation, modulus matching cval in "only" mode, or modulus not matching cval in "sans" mode.
+		 * If checkadd was true for the previous read, then the previous read is added to the chromosome trees and a new read is added.
+		 * If checkadd is not true, then there's no need to add a new read vector, and the previous read will be processed with the next read for which checkadd is true.
+		 * Either way, the raw_counter is incremented. For this read, values are only added to the latest vector if checkadd is true.
+		 * If checkadd was false at the end of the while loop (end of reads), then the last read didn't get added to the trees, so it is added with endRead after loop. */
+
+	bool checkadd;
+
+	while (reads_file >> chrom >> start >> stop >> read_str >> strand_str >> as_str >> ys_str)
+	{
+		if (read_str != read_ids)
+		{
+			checkadd = (crossval==1) || (raw_counter % crossval == cval && onsa) || (raw_counter % crossval != cval && !onsa);
+			if (checkadd)
+			{
+				if (id_counter >= 0)
+				{
+					endRead(id_counter, not_added_fix, numaligns, maxaligns);
+				}
+
+				nextRead(id_counter);
+				numaligns = 0;
+			}
+			raw_counter++;
+			read_ids = read_str;
+		}
+
+		if(checkadd)
+		{
+			//Remove the AS:i: and the YS:i: from the scores, respectively.
+			as_str.erase(0, 5);
+			ys_str.erase(0, 5);
+			as = stoi(as_str);
+			ys = stoi(ys_str);
+			bool strand;
+
+			if (strand_str == "+") { strand = true; }
+			else { strand = false; }
+
+			//Check the probability of the map being accurately aligned; if zero, then it will always have weight 0, so just remove the map.
+			float pm = probMap(as + ys, score_min);
+			if (pm > 0)
+			{
+				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , strand};
+				reads_vector[id_counter].push_back(new_read_map);
+			}
+			else { not_added_prob++; }
+
+			numaligns++;
+		}
+	}
+
+	if (!checkadd) { endRead(id_counter, not_added_fix, numaligns, maxaligns); }
+
+	outlog << "Not added due to low map quality: " << not_added_prob << "\n";
+	outlog << "Not added due to fixation: " << not_added_fix << "\n";
+}
+
+void parseReadsFileStranded(ifstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa)
+{
+	string chrom;
+	int start, stop, as, ys;
+	string read_str, as_str, ys_str, strand_str;
+	int not_added_fix = 0;
+	int not_added_prob = 0;
+	int numaligns = 0;
+		/* Cross-validation functionality is sufficiently complex that it deserves a dedicated explanation here.
+		 * To determine whether a read needs to be added, checkadd is computed at the detection of a read ID for the beginning of the next read (or first read).
+		 * checkadd is true under one of the three conditions: no cross-validation, modulus matching cval in "only" mode, or modulus not matching cval in "sans" mode.
+		 * If checkadd was true for the previous read, then the previous read is added to the chromosome trees and a new read is added.
+		 * If checkadd is not true, then there's no need to add a new read vector, and the previous read will be processed with the next read for which checkadd is true.
+		 * Either way, the raw_counter is incremented. For this read, values are only added to the latest vector if checkadd is true.
+		 * If checkadd was false at the end of the while loop (end of reads), then the last read didn't get added to the trees, so it is added with endRead after loop. */
+
+	bool checkadd;
+
+	while (reads_file >> chrom >> start >> stop >> read_str >> strand_str >> as_str >> ys_str)
+	{
+		if (read_str != read_ids)
+		{
+			checkadd = (crossval==1) || (raw_counter % crossval == cval && onsa) || (raw_counter % crossval != cval && !onsa);
+			if (checkadd)
+			{
+				if (id_counter >= 0)
+				{
+					endRead(id_counter, not_added_fix, numaligns, maxaligns);
+				}
+
+				nextRead(id_counter);
+				numaligns = 0;
+			}
+			raw_counter++;
+			read_ids = read_str;
+		}
+
+		if(checkadd)
+		{
+			//Remove the AS:i: and the YS:i: from the scores, respectively.
+			as_str.erase(0, 5);
+			ys_str.erase(0, 5);
+			as = stoi(as_str);
+			ys = stoi(ys_str);
+			bool strand;
+
+			if (strand_str == "+") { strand = true; }
+			else { strand = false; }
+
+			//Check the probability of the map being accurately aligned; if zero, then it will always have weight 0, so just remove the map.
+			float pm = probMap(as + ys, score_min);
+			if (pm > 0)
+			{
+				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , strand};
 				reads_vector[id_counter].push_back(new_read_map);
 			}
 			else { not_added_prob++; }

@@ -53,7 +53,15 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 			for (int j = 0; j < nummaps; j++)
 			{
 				int chromindex = reads_vector[i][j].chrom;
-				reads_vector[i][j].count = rangeSum(tree1[chromindex], tree2[chromindex], reads_vector[i][j].start, reads_vector[i][j].stop);
+				bool strandtemp = reads_vector[i][j].strand;
+				if (strandtemp)
+				{
+					reads_vector[i][j].count = rangeSum(tree1[chromindex], tree2[chromindex], reads_vector[i][j].start, reads_vector[i][j].stop);
+				}
+				else
+				{
+					reads_vector[i][j].count = rangeSum(tree1neg[chromindex], tree2neg[chromindex], reads_vector[i][j].start, reads_vector[i][j].stop);
+				}
 			}
 
 			//Adds up the counts for the reads
@@ -81,7 +89,15 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 				}
 
 				int chromindex = tempread.chrom;
-				rangeUpdate(tree1[chromindex], tree2[chromindex], tempread.start, tempread.stop, dw, counter_to_length[chromindex]);
+				bool strandtemp = tempread.strand;
+				if (strandtemp)
+				{
+					rangeUpdate(tree1[chromindex], tree2[chromindex], tempread.start, tempread.stop, dw, counter_to_length[chromindex]);
+				}
+				else
+				{
+					rangeUpdate(tree1neg[chromindex], tree2neg[chromindex], tempread.start, tempread.stop, dw, counter_to_length[chromindex]);
+				}
 				reads_vector[i][j].weight = new_weight;
 				if (new_weight < (1-fixation) * tempread.weight || new_weight > (1+fixation) * tempread.weight)
 				{
@@ -109,8 +125,8 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 			if (itercounter < 10 || itercounter % 10 == 0)
 			{
 				outlog << "Writing bedgraph for iteration " << itercounter << "\n\n";
-				string filename = output_prefix + "_iteration-" + to_string(itercounter) + ".bedgraph.gz";
-				writeBedgraphOutput(filename);
+				string filepref = output_prefix + "_iteration-" + to_string(itercounter);
+				writeBedgraphOutput(filepref);
 			}
 		}
 	}

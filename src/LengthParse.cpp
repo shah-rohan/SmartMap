@@ -31,6 +31,11 @@ void parseLengthFile(ifstream& length_file)
 		treeDoub chromtemp2(length + 1, 0);
 		tree1.push_back(chromtemp);
 		tree2.push_back(chromtemp2);
+		if (stranded)
+		{
+			tree1neg.push_back(chromtemp);
+			tree2neg.push_back(chromtemp2);
+		}
 		counter++;
 	}
 }

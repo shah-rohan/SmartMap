@@ -23,6 +23,8 @@ using namespace std::chrono;
 
 void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa);
 void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa);
+void parseReadsFileStranded(igzstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa);
+void parseReadsFileStranded(ifstream& reads_file, string& read_ids, int& id_counter, int& raw_counter, int crossval, int cval, int maxaligns, float score_min, bool onsa);
 
 
 #endif /* READPARSE_H_ */

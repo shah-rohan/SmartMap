@@ -26,6 +26,7 @@ struct readMap
 {
 	int chrom, start, stop;
 	float count, weight, prob;
+	bool strand; // TRUE if plus, FALSE if minus
 };
 
 struct outStream
@@ -44,11 +45,12 @@ struct outStream
 //Declaration of global variables, initialized in Multimap.cpp
 
 extern outStream outlog;
-extern treesVec tree1;
-extern treesDoub tree2;
+extern treesVec tree1, tree1neg;
+extern treesDoub tree2, tree2neg;
 extern vector< vector<readMap> > reads_vector;
 extern map<string, int> chrom_to_counter;
 extern vector<string> counter_to_chrom;
 extern vector<int> counter_to_length;
+extern bool stranded;
 
 #endif /* MMCOMMON_H_ */

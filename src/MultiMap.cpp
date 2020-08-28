@@ -28,12 +28,13 @@ using namespace std::chrono;
 //Define global variables
 
 outStream outlog = { NULL };
-treesVec tree1;
-treesDoub tree2;
+treesVec tree1, tree1neg;
+treesDoub tree2, tree2neg;
 vector< vector<readMap> > reads_vector;
 map<string, int> chrom_to_counter;
 vector<string> counter_to_chrom;
 vector<int> counter_to_length;
+bool stranded;
 
 //Off-the-shelf solution to check whether the filename ends with the extension
 
@@ -73,7 +74,8 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 			//Using igzstream and appropriate function if compressed file.
 			igzstream reads_file(rfils[fils].c_str());
 			if (!reads_file) { cerr << "File " << rfils[fils] << " could not be opened for reading."; return; }
-			parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa);
+			if (stranded) { parseReadsFileStranded(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa); }
+			else { parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa); }
 			reads_file.close();
 		}
 		else
@@ -81,7 +83,8 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 			//Using ifstream and appropriate function if not compressed file.
 			ifstream reads_file(rfils[fils]);
 			if (!reads_file) { cerr << "File " << rfils[fils] << " could not be opened for reading."; return; }
-			parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa);
+			if (stranded) { parseReadsFileStranded(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa); }
+			else { parseReadsFile(reads_file, read_ids, id_counter, raw_counter, crossval, cval, maxaligns, score_min, onsa); }
 			reads_file.close();
 		}
 
@@ -102,7 +105,7 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 	if (contout)
 	{
 		outlog << "Writing bedgraph for iteration 0\n\n";
-		string filename = reweight_prefix + "_iteration-0.bedgraph.gz";
+		string filename = reweight_prefix + "_iteration-0";
 		writeBedgraphOutput(filename);
 	}
 
@@ -114,9 +117,7 @@ void readThroughBedgraph(const vector<string> rfils, int iterations, float fixat
 
 	if (!contout || !finalwrite)
 	{
-		string filename = reweight_prefix + ".bedgraph.gz";
-		outlog << "Writing bedgraph to " << filename << "\n";
-		writeBedgraphOutput(filename);
+		writeBedgraphOutput(reweight_prefix);
 	}
 }
 
@@ -127,6 +128,7 @@ int main(int argc, char* argv[])
 	float fixation = 0, score_min = 0;
 	string length_name, output_prefix;
 	bool contout = false;
+	stranded = false;
 
 	string helpmessage = "MultiMap for analysis of ambiguously mapping reads in ChIP-seq.\n\n"
 			"Usage: MultiMap [options] [bed or bed.gz file input(s)]\n\n"
@@ -140,12 +142,13 @@ int main(int argc, char* argv[])
 			"-s : Minimum score for Bowtie2 display. Default 0 (unscored).\n"
 			"-v : N for N-fold cross-validation. Default 1 (no cross-validation).\n"
 			"-c : Flag for continuous output bedgraphs. Default off.\n"
+			"-S : Flag for strand-specific mode. Default off.\n"
 			"-h : Display help message.\n\n"
 			"Developed by Rohan Shah (rohanshah@uchicago.edu).\n";
 
 	//Parse command options
 
-	while ((opt = getopt(argc, argv, "g:o:i:x:m:s:v:ch")) != -1)
+	while ((opt = getopt(argc, argv, "g:o:i:x:m:s:v:cSh")) != -1)
 	{
 		switch (opt)
 		{
@@ -173,6 +176,9 @@ int main(int argc, char* argv[])
 		case 'c':
 			contout = true;
 			break;
+		case 'S':
+			stranded = true;
+			break;
 		case 'h':
 			cout << helpmessage;
 			return 0;
@@ -198,6 +204,10 @@ int main(int argc, char* argv[])
 	if (crossval == 1) { crossout = "FALSE"; }
 	else { crossout = to_string(crossval); }
 
+	string strandstr;
+	if (stranded) { strandstr = "TRUE"; }
+	else { strandstr = "FALSE"; }
+
 	outlog << "Length file: " << length_name << "\n";
 	outlog << "Output prefix: " << output_prefix << "\n";
 	outlog << "Iterations: " << to_string(iterations) << "\n";
@@ -206,6 +216,7 @@ int main(int argc, char* argv[])
 	outlog << "Minimum score: " << minscr << "\n";
 	outlog << "Continuous output: " << contstr << "\n";
 	outlog << "N-fold Cross Validation: " << crossout << "\n";
+	outlog << "Strand-specific: " << strandstr << "\n";
 
 	//Parse length file
 
