@@ -48,20 +48,20 @@ We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above 
 
 Inputs (required):
 
--x Path to basename of Bowtie2 index for alignment\
--o Output prefix prepended to the output files\
--1 FastQ file for read mate 1 (can be gzipped)\
--2 FastQ file for read mate 2 (can be gzipped)
+    -x Path to basename of Bowtie2 index for alignment
+    -o Output prefix prepended to the output files 
+    -1 FastQ file for read mate 1 (can be gzipped)  
+    -2 FastQ file for read mate 2 (can be gzipped)
 
 Options:
 
--p Number of CPU threads to be used for multithreaded alignment (default: 1)\
--I Minimum insert length (default: 100)\
--L Maximum insert length (default: 250)\
--k Maximum number of alingments reported (default: 51)\
--s String to be removed from read names
+    -p Number of CPU threads to be used for multithreaded alignment (default: 1)\
+    -I Minimum insert length (default: 100)\
+    -L Maximum insert length (default: 250)\
+    -k Maximum number of alingments reported (default: 51)\
+    -s String to be removed from read names
 
--h Display help message
+    -h Display help message
 
 ## Documentation for MultiMapRNAPrep
 
@@ -104,18 +104,18 @@ We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above 
 
 Inputs (required):
 
--x Path to basename of Hisat2 index for alignment\
--o Output prefix prepended to the output files\
--1 FastQ file for read mate 1 (can be gzipped)\
--2 FastQ file for read mate 2 (can be gzipped)
+    -x Path to basename of Hisat2 index for alignment
+    -o Output prefix prepended to the output files
+    -1 FastQ file for read mate 1 (can be gzipped)
+    -2 FastQ file for read mate 2 (can be gzipped)
 
 Options:
 
--p Number of CPU threads to be used for multithreaded alignment (default: 1)\
--k Maximum number of alingments reported (default: 51)\
--s String to be removed from read names
+    -p Number of CPU threads to be used for multithreaded alignment (default: 1)
+    -k Maximum number of alingments reported (default: 51)
+    -s String to be removed from read names
 
--h Display help message
+    -h Display help message
 
 ## Documentation for MultiMap
 
@@ -145,21 +145,21 @@ The MultiMap binary will appear in the "Default" directory. It can then be moved
 
 Inputs (required):
 
--g : Genome length file listing all chromosomes and lengths. Chromosomes will appear in this order in the output BEDGRAPH file.\
--o : Output prefix used for output BEDGRAPH and log files.\
-Input files: Path to BED or BED.gz files, separated by spaces. Must be the last argument(s) passed to the software.
+    -g : Genome length file listing all chromosomes and lengths. Chromosomes will appear in this order in the output BEDGRAPH file.
+    -o : Output prefix used for output BEDGRAPH and log files.
+    Input files: Path to BED or BED.gz files, separated by spaces. Must be the last argument(s) passed to the software.
 
 Options:
 
--i : Number of iterations. Default 1.\
--x : Fixation percentage threshold. Default 0.\
--m : Maximum number of alignments for a read to be processed. Default 50.\
--s : Minimum score for Bowtie2 display. Default 0 (unscored).\
--v : N for N-fold cross-validation. Default 1 (no cross-validation).\
--c : Flag for continuous output bedgraphs. Default off.\
--S : Flag for strand-specific mode. Default off.
+    -i : Number of iterations. Default 1.
+    -x : Fixation percentage threshold. Default 0.
+    -m : Maximum number of alignments for a read to be processed. Default 50.
+    -s : Minimum score for Bowtie2 display. Default 0 (unscored).
+    -v : N for N-fold cross-validation. Default 1 (no cross-validation).
+    -c : Flag for continuous output bedgraphs. Default off.
+    -S : Flag for strand-specific mode. Default off.
 
--h : Display help message.
+    -h : Display help message.
 
 ## Acknowledgments and Contact
 
