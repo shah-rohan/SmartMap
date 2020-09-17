@@ -36,4 +36,6 @@ splitpref=$outprefix"_vf_k"$kfilt"_filt-flag_filt-coord_scores"
 
 hisat2 -p $pcores -x $btindex --no-discordant --no-mixed -k $kfilt -1 $R1fq -2 $R2fq | awk '$2==99 || $2==163 || $2==355 || $2==419{strand = "+"; if ($2==163 || $2==419) {strand = "-"} as = ""; ys = ""; for (i=12; i<=NF; i++){if ($i ~/^AS/){as = $i} if ($i ~/^YS/){ys = $i; break}} print $3"\t"$4"\t"$4+$9-1"\t"$1"\t"strand"\t"as"\t"ys}' | awk '$2>0 && $3>$2 && $6~/^AS:i:/ && $7~/^YS:i:/{print}' > $outname
 
+mkdir -p splits/
+
 awk -v pref=$splitpref '{if ($4==storedval){a++; b[a] = $0; next} for (i in b){print b[i] > "splits/"pref"_map-"a".bed"} delete b; a = 1; b[a] = $0;; storedval = $4} END {for (i in b){print b[i] > "splits/"pref"_map-"a".bed"}}' $outname && gzip $outname
