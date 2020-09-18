@@ -1,0 +1,217 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	margin: 0;
+	padding: 0;
+	color: #000;
+}
+
+/* ~~ Element/tag selectors ~~ */
+ul, ol, dl { /* Due to variations between browsers, it's best practices to zero padding and margin on lists. For consistency, you can either specify the amounts you want here, or on the list items (LI, DT, DD) they contain. Remember that what you do here will cascade to the .nav list unless you write a more specific selector. */
+	padding: 0;
+	margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+	margin-top: 0;	 /* removing the top margin gets around an issue where margins can escape from their containing div. The remaining bottom margin will hold it away from any elements that follow. */
+	padding-right: 10px;
+	padding-left: 0; /* adding the padding to the sides of the elements within the divs, instead of the divs themselves, gets rid of any box model math. A nested div with side padding can also be used as an alternate method. */
+}
+
+h1 {
+	color: #666666;
+	font-weight: normal;
+	padding-right:0;
+	padding-bottom:0;
+	margin-left:0;
+	margin-right:0;
+	margin-bottom:10px;
+	font-size:34px;
+}
+
+h2 {
+	color: #666666;
+	font-weight: bold;
+	font-size: 24px;
+}
+
+h3 {
+	color: #bf1300;
+	font-weight:normal;
+	font-size:20px;
+	margin-bottom: 10px;
+}
+
+h4 {
+	color: #666666;
+	font-weight:bold;
+	font-size:24px;
+	margin-bottom:10px;
+}
+
+h5 {
+	font-weight:bold;
+	font-size:16px;
+}
+
+hr {
+	margin: 25px 0 20px 0;
+}
+
+code {
+	font-size: 16px;
+}
+
+a img { /* this selector removes the default blue border displayed in some browsers around an image when it is surrounded by a link */
+	border: none;
+}
+
+/* ~~ Styling for your site's links must remain in this order - including the group of selectors that create the hover effect. ~~ */
+a:link {
+	color:#666666;
+	text-decoration: underline; /* unless you style your links to look extremely unique, it's best to provide underlines for quick visual identification */
+}
+a:visited {
+	color: #666666;
+	text-decoration: underline;
+}
+a:hover, a:active, a:focus { /* this group of selectors will give a keyboard navigator the same hover experience as the person using a mouse. */
+	text-decoration: none;
+}
+
+/* ~~ this container surrounds all other divs giving them their percentage-based width ~~ */
+.container {
+	width: 80%;
+	max-width: 1260px;/* a max-width may be desirable to keep this layout from getting too wide on a large monitor. This keeps line length more readable. IE6 does not respect this declaration. */
+	min-width: 780px;/* a min-width may be desirable to keep this layout from getting too narrow. This keeps line length more readable in the side columns. IE6 does not respect this declaration. */
+	background-color: #FFF;
+	margin: 0 auto; /* the auto value on the sides, coupled with the width, centers the layout. It is not needed if you set the .container's width to 100%. */
+	overflow: hidden; /* this declaration makes the .container clear all floated columns within it. */
+}
+
+.sidebar1 {
+	float: left;
+	width: 220px;
+	background-color: #FFFFFF;
+	padding-top:10px;
+	padding-bottom: 10px;
+	padding-right: 20px;
+	position: fixed;
+	text-align:right;
+	color: #666666;
+	font:Arial, Helvetica, sans-serif;
+}
+
+.sidebar1 img{
+	width:100%;
+	padding-top: 20px;
+}
+
+/* content */
+
+.content {
+	padding: 10px 0;
+	width: auto;
+	margin-left: 240px;
+	margin-right: 0;
+	float: left;
+	color: #666666;
+}
+
+.content imgl {
+	float: left;
+	clear: left;
+	overflow: auto;	
+	padding: 0 10px 0 0;
+}
+
+/* bannerholder */
+
+.bannerholder {
+	padding: 0;
+	width: 100%;
+	height: auto;
+	float: left;
+	margin-bottom: 20px;
+}
+
+.bannerholder img{
+	width: 100%;
+	height: auto;
+}
+
+.bannerholder iframe{
+	width: 98%;
+	margin: 1%
+}
+
+.codebox {
+	padding: 0;
+	width: 100%;
+	height: auto;
+	float: left;
+	background-color: #f6f8fa;
+	margin-bottom: 20px;
+	font-family: Consolas, Courier, monospace;
+}
+
+.codebox p {
+	margin-bottom: 5px;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+/* ~~ This grouped selector gives the lists in the .content area space ~~ */
+.content ul, .content ol { 
+	padding: 0 15px 15px 40px; /* this padding mirrors the right padding in the headings and paragraph rule above. Padding was placed on the bottom for space between other elements on the lists and on the left to create the indention. These may be adjusted as you wish. */
+}
+
+/* ~~ The navigation list styles (can be removed if you choose to use a premade flyout menu like Spry) ~~ */
+
+.sidebar1 a, .sidebar1 a:visited, .dropdown-btn { /* grouping these selectors makes sure that your links retain their button look even after being visited */
+	padding: 5px 5px 10px 0px;
+	text-decoration: none;
+	display: block;
+	color: #666666;
+	font-size: 21px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border: none;
+	outline: none;
+	background: none;
+	text-align: right;
+	float: right;
+}
+
+.dropdown-btn {
+	padding: 5px 5px 10px 0;
+	width: 100%;
+}
+
+.sidebar1 a:hover, .sidebar1 a:active, .sidebar1 a:focus { /* this changes the background and text color for both mouse and keyboard navigators */
+	color: #bf1300;
+}
+
+.fa-caret-down {
+  padding-right: 10px;
+  padding-top: 1px;
+}
+
+.dropdown-container {
+  display: none;
+}
+
+.dropdown-container a {
+  font-size: 18px;
+  display: block;
+  width: 100%;
+  background-color: #f6f8fa;
+}
+
+.active {
+  background-color: #666666;
+  color: #f6f8fa;
+}
+
+-->
