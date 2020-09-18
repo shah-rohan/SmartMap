@@ -112,7 +112,7 @@ Inputs (required):
 Options:
 
     -p Number of CPU threads to be used for multithreaded alignment (default: 1)
-    -k Maximum number of alingments reported (default: 51)
+    -k Maximum number of alignments reported (default: 51)
     -s String to be removed from read names
 
     -h Display help message
@@ -166,3 +166,5 @@ Options:
 These tools were designed and written by Rohan Shah (rohanshah@uchicago.edu).
 
 Contact Rohan Shah (rohanshah@uchicago.edu) or Alex Ruthenburg (aruthenburg@uchicago.edu) with questions, comments, or issues.
+
+This Software is provided under a modified MIT License. Please cite and acknowledge this repository in any works utilizing this software.
