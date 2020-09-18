@@ -189,7 +189,7 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 	width: 100%;
 }
 
-.sidebar1 a:hover, .sidebar1 a:active, .sidebar1 a:focus { /* this changes the background and text color for both mouse and keyboard navigators */
+.sidebar1 a:hover, .sidebar1 a:active, .sidebar1 a:focus, .dropdown-btn:hover { /* this changes the background and text color for both mouse and keyboard navigators */
 	color: #bf1300;
 }
 
