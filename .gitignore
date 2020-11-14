@@ -4,3 +4,5 @@
 Default/MultiMap
 Default/src/*.d
 Default/src/*.o
+gzstream/*.o
+gzstream/*.a

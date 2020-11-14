@@ -133,7 +133,7 @@ We have tested this software on Ubuntu LTS 14.04, 16.04, and 18.04. For the abov
 
 ### Building MultiMap binary from source
 
-The source files for the MultiMap software are provided here. To build the MultiMap binary from source, first navigate to the "Default" directory. Once in the "Default" directory, run the following command:
+The source files for the MultiMap software are provided here. To build the MultiMap binary from source, from the main project directory, run the following command:
 
 `make all`
 
