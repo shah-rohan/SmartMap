@@ -14,7 +14,6 @@
 #include <getopt.h>
 #include <zlib.h>
 
-#include "gzstream.h"
 #include "BITOps.h"
 #include "LengthParse.h"
 #include "MMCommon.h"
@@ -32,9 +31,11 @@ treesVec tree1, tree1neg;
 treesDoub tree2, tree2neg;
 vector< vector<readMap> > reads_vector;
 map<string, int> chrom_to_counter;
-vector<string> counter_to_chrom;
+vector<string> counter_to_chrom, reads_str_vector;
 vector<int> counter_to_length;
-bool stranded;
+bool stranded, readoutput;
+float fitrate;
+ogzstream read_out_unit;
 
 //Off-the-shelf solution to check whether the filename ends with the extension
 
@@ -129,6 +130,8 @@ int main(int argc, char* argv[])
 	string length_name, output_prefix;
 	bool contout = false;
 	stranded = false;
+	readoutput = false;
+	fitrate = 1;
 
 	string helpmessage = "MultiMap for analysis of ambiguously mapping reads in ChIP-seq.\n\n"
 			"Usage: MultiMap [options] [bed or bed.gz file input(s)]\n\n"
@@ -137,18 +140,19 @@ int main(int argc, char* argv[])
 			"-o : Output prefix used for output bedgraph and log files.\n\n"
 			"Non-required options:\n"
 			"-i : Number of iterations. Default 1.\n"
-			"-x : Fixation percentage threshold. Default 0.\n"
 			"-m : Maximum number of alignments for a read to be processed. Default 50.\n"
 			"-s : Minimum score for Bowtie2 display. Default 0 (unscored).\n"
 			"-v : N for N-fold cross-validation. Default 1 (no cross-validation).\n"
 			"-c : Flag for continuous output bedgraphs. Default off.\n"
 			"-S : Flag for strand-specific mode. Default off.\n"
+			"-r : Flag for read output mode with weights. Default off.\n"
+			"-l : Rate of fitting in reweighting. Default 1.\n"
 			"-h : Display help message.\n\n"
 			"Developed by Rohan Shah (rohanshah@uchicago.edu).\n";
 
 	//Parse command options
 
-	while ((opt = getopt(argc, argv, "g:o:i:x:m:s:v:cSh")) != -1)
+	while ((opt = getopt(argc, argv, "g:o:i:x:m:s:v:l:cSrh")) != -1)
 	{
 		switch (opt)
 		{
@@ -173,11 +177,17 @@ int main(int argc, char* argv[])
 		case 'v':
 			crossval = stoi(optarg);
 			break;
+		case 'l':
+			fitrate = stof(optarg);
+			break;
 		case 'c':
 			contout = true;
 			break;
 		case 'S':
 			stranded = true;
+			break;
+		case 'r':
+			readoutput = true;
 			break;
 		case 'h':
 			cout << helpmessage;
@@ -208,6 +218,10 @@ int main(int argc, char* argv[])
 	if (stranded) { strandstr = "TRUE"; }
 	else { strandstr = "FALSE"; }
 
+	string readoutputstr;
+	if (readoutput) { readoutputstr = "TRUE"; }
+	else { readoutputstr = "FALSE"; }
+
 	outlog << "Length file: " << length_name << "\n";
 	outlog << "Output prefix: " << output_prefix << "\n";
 	outlog << "Iterations: " << to_string(iterations) << "\n";
@@ -217,6 +231,8 @@ int main(int argc, char* argv[])
 	outlog << "Continuous output: " << contstr << "\n";
 	outlog << "N-fold Cross Validation: " << crossout << "\n";
 	outlog << "Strand-specific: " << strandstr << "\n";
+	outlog << "Reweight fitting rate: " << to_string(fitrate) << "\n";
+	outlog << "Read output: " << readoutputstr << "\n";
 
 	//Parse length file
 
@@ -228,6 +244,13 @@ int main(int argc, char* argv[])
 	length_file.close();
 
 	//Store the list of reads files in vector rfils so it can be accessed later, multiple times if needed.
+
+	//Create the read output file if indicated
+	if (readoutput)
+	{
+		string readout_uniterated = output_prefix + "_reads_uniterated.bed.gz";
+		read_out_unit.open(readout_uniterated.c_str());
+	}
 
 	vector< string > rfils;
 
@@ -285,6 +308,7 @@ int main(int argc, char* argv[])
 	}
 
 	logfile.close();
+	read_out_unit.close();
 	return 0;
 }
 

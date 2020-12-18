@@ -52,6 +52,37 @@ void writeBedgraphInternal(treesVec& tree, string bedgraph_filename)
 	bedgraph_file.close();
 }
 
+void writeReadOutputIterated(string filename)
+{
+	ogzstream read_out_iter;
+	read_out_iter.open(filename.c_str());
+	outlog << "Writing uniterated reads to " << filename << "\n";
+	read_out_iter << fixed << setprecision(2);
+
+	for (unsigned int readindex = 0; readindex < reads_vector.size(); readindex++)
+	{
+		string readid = reads_str_vector[readindex];
+
+		for (unsigned int mapindex = 0; mapindex < reads_vector[readindex].size(); mapindex++)
+		{
+			readMap tempread = reads_vector[readindex][mapindex];
+
+			if (stranded)
+			{
+				string strand_str = "-";
+				if (tempread.strand) { strand_str = "+"; }
+				read_out_iter << counter_to_chrom[tempread.chrom] << "\t" << tempread.start << "\t" << tempread.stop << "\t" << reads_str_vector[readindex] << "\t" << strand_str << "\t" << tempread.weight << "\n";
+			}
+			else
+			{
+				read_out_iter << counter_to_chrom[tempread.chrom] << "\t" << tempread.start << "\t" << tempread.stop << "\t" << reads_str_vector[readindex] << "\t" << tempread.weight << "\n";
+			}
+		}
+	}
+
+	read_out_iter.close();
+}
+
 void writeBedgraphOutput(string file_prefix)
 {
 	if (stranded)
@@ -65,5 +96,11 @@ void writeBedgraphOutput(string file_prefix)
 	{
 		string filename = file_prefix + ".bedgraph.gz";
 		writeBedgraphInternal(tree1, filename);
+	}
+
+	if (readoutput)
+	{
+		string readout_filename = file_prefix + "_reads_iterated.bed.gz";
+		writeReadOutputIterated(readout_filename);
 	}
 }

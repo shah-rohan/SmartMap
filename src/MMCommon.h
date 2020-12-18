@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iomanip>
 #include <map>
+#include "gzstream.h"
 
 using namespace std;
 
@@ -49,8 +50,10 @@ extern treesVec tree1, tree1neg;
 extern treesDoub tree2, tree2neg;
 extern vector< vector<readMap> > reads_vector;
 extern map<string, int> chrom_to_counter;
-extern vector<string> counter_to_chrom;
+extern vector<string> counter_to_chrom, reads_str_vector;
 extern vector<int> counter_to_length;
-extern bool stranded;
+extern bool stranded, readoutput;
+extern float fitrate;
+extern ogzstream read_out_unit;
 
 #endif /* MMCOMMON_H_ */

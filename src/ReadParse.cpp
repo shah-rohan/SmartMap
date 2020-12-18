@@ -34,6 +34,7 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 	if (numaligns > maxaligns)
 	{
 		reads_vector.pop_back();
+		reads_str_vector.pop_back();
 		id_counter--;
 		return;
 	}
@@ -69,11 +70,29 @@ void endRead(int& id_counter, int& not_added_fix, int numaligns, int maxaligns)
 	}
 
 	//Fixed reads: Don't need them in the array, so just remove the read and decrement id_counter. Add 1 to fixed number if there was 1 map, 0 if 0 maps.
-	if (nummaps == 1 || nummaps == 0)
+	if (nummaps == 1)
+	{
+		readMap tempread = reads_vector[id_counter][0];
+		if (stranded)
+		{
+			string strand_str = "-";
+			if (tempread.strand) { strand_str = "+"; }
+			read_out_unit << counter_to_chrom[tempread.chrom] << "\t" << tempread.start << "\t" << tempread.stop << "\t" << reads_str_vector[id_counter] << "\t" << strand_str << "\t1\n";
+		}
+		else
+		{
+			read_out_unit << counter_to_chrom[tempread.chrom] << "\t" << tempread.start << "\t" << tempread.stop << "\t" << reads_str_vector[id_counter] << "\t1\n";
+		}
+		reads_vector.pop_back();
+		reads_str_vector.pop_back();
+		not_added_fix++;
+		id_counter--;
+	}
+	else if (nummaps == 0)
 	{
 		reads_vector.pop_back();
+		reads_str_vector.pop_back();
 		id_counter--;
-		not_added_fix += nummaps;
 	}
 }
 
@@ -117,6 +136,7 @@ void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, in
 				}
 
 				nextRead(id_counter);
+				reads_str_vector.push_back(read_str);
 				numaligns = 0;
 			}
 			raw_counter++;
@@ -138,7 +158,11 @@ void parseReadsFile(igzstream& reads_file, string& read_ids, int& id_counter, in
 				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm, true };
 				reads_vector[id_counter].push_back(new_read_map);
 			}
-			else { not_added_prob++; }
+			else
+			{
+				not_added_prob++;
+				if (readoutput) { read_out_unit << chrom << "\t" << start << "\t" << stop << "\t" << read_str << "\t0\n"; }
+			}
 
 			numaligns++;
 		}
@@ -186,6 +210,7 @@ void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int
 			}
 			raw_counter++;
 			read_ids = read_str;
+			reads_str_vector.push_back(read_str);
 		}
 
 		if(checkadd)
@@ -203,7 +228,11 @@ void parseReadsFile(ifstream& reads_file, string& read_ids, int& id_counter, int
 				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , true};
 				reads_vector[id_counter].push_back(new_read_map);
 			}
-			else { not_added_prob++; }
+			else
+			{
+				not_added_prob++;
+				if (readoutput) { read_out_unit << chrom << "\t" << start << "\t" << stop << "\t" << read_str << "\t0\n"; }
+			}
 
 			numaligns++;
 		}
@@ -250,6 +279,7 @@ void parseReadsFileStranded(igzstream& reads_file, string& read_ids, int& id_cou
 			}
 			raw_counter++;
 			read_ids = read_str;
+			reads_str_vector.push_back(read_str);
 		}
 
 		if(checkadd)
@@ -271,7 +301,11 @@ void parseReadsFileStranded(igzstream& reads_file, string& read_ids, int& id_cou
 				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , strand};
 				reads_vector[id_counter].push_back(new_read_map);
 			}
-			else { not_added_prob++; }
+			else
+			{
+				not_added_prob++;
+				if (readoutput) { read_out_unit << chrom << "\t" << start << "\t" << stop << "\t" << read_str << "\t" << strand_str << "\t0\n"; }
+			}
 
 			numaligns++;
 		}
@@ -318,6 +352,7 @@ void parseReadsFileStranded(ifstream& reads_file, string& read_ids, int& id_coun
 			}
 			raw_counter++;
 			read_ids = read_str;
+			reads_str_vector.push_back(read_str);
 		}
 
 		if(checkadd)
@@ -339,7 +374,11 @@ void parseReadsFileStranded(ifstream& reads_file, string& read_ids, int& id_coun
 				readMap new_read_map = { chrom_to_counter[chrom], start, stop, 1, 0, pm , strand};
 				reads_vector[id_counter].push_back(new_read_map);
 			}
-			else { not_added_prob++; }
+			else
+			{
+				not_added_prob++;
+				if (readoutput) { read_out_unit << chrom << "\t" << start << "\t" << stop << "\t" << read_str << "\t" << strand_str << "\t0\n"; }
+			}
 
 			numaligns++;
 		}

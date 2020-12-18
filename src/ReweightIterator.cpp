@@ -13,7 +13,7 @@
 using namespace std;
 using namespace std::chrono;
 
-//Removes a read from reads_vector with index i; move operator to be avoided if it's the last read already to avoid move to self.
+/*//Removes a read from reads_vector with index i; move operator to be avoided if it's the last read already to avoid move to self.
 void removeFixedRead(int i)
 {
 	if (i != int(reads_vector.size()) - 1)
@@ -21,7 +21,7 @@ void removeFixedRead(int i)
 		reads_vector[i] = std::move(reads_vector.back());
 	}
 	reads_vector.pop_back();
-}
+}*/
 
 //Runs through the reads_vector and iteratively reassigns weights as per the posterior probability algorithm.
 void reweightIterator(int iterations, float fixation, string output_prefix, bool contout)
@@ -39,12 +39,12 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 			bool fixed = true;
 
 			//Really should be unnecessary due to the removal of fixed reads in ReadParse, but nothing wrong with an extra check.
-			if (reads_vector[i].size() == 1)
+			/*if (reads_vector[i].size() == 1)
 			{
 				removeFixedRead(i);
 				fixremove++;
 				continue;
-			}
+			}*/
 
 			int nummaps = reads_vector[i].size();
 			float countsum = 0;
@@ -80,7 +80,7 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 				readMap tempread = reads_vector[i][j];
 				float new_weight = (tempread.count * tempread.prob * 100.0 / (tempread.stop - tempread.start)) / countsum;
 				if (tempread.count * tempread.prob < 0 || countsum <= 0) { new_weight = 0; }
-				float dw = new_weight - tempread.weight;
+				float dw = (new_weight - tempread.weight)*fitrate;
 
 				//If there's no changes in the map weight, then there's no need to go through the motions of adding zero to the trees.
 				if (dw == 0)
@@ -106,17 +106,17 @@ void reweightIterator(int iterations, float fixation, string output_prefix, bool
 				}
 			}
 
-			if (fixed)
+			/*if (fixed)
 			{
 				removeFixedRead(i);
 				fixremove++;
-			}
+			}*/
 		}
 
 		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<seconds>(stop - start);
 
-		outlog << "Reads removed due to fixation: " << fixremove << "\n";
+		//outlog << "Reads removed due to fixation: " << fixremove << "\n";
 		outlog << "Completed iteration " << itercounter << " in " << duration.count() << " seconds\n\n";
 
 		//Continuous output bedgraph option: prints for the first 10 iterations and every 10th iteration thereafter
