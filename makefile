@@ -1,3 +1,3 @@
 all:
 	$(MAKE) -C gzstream
-	$(MAKE) -C Default
+	$(MAKE) -C Default all

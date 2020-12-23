@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
 	readoutput = false;
 	fitrate = 1;
 
-	string helpmessage = "MultiMap for analysis of ambiguously mapping reads in ChIP-seq.\n\n"
+	string helpmessage = "MultiMap for analysis of ambiguously mapping reads in ChIP-seq. Version 0.2.0.\n\n"
 			"Usage: MultiMap [options] [bed or bed.gz file input(s)]\n\n"
 			"Required options:\n"
 			"-g : Genome length file listing all chromosomes and lengths. Chromosomes will appear in this order in output file.\n"
