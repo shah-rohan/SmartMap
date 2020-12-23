@@ -152,12 +152,13 @@ Inputs (required):
 Options:
 
     -i : Number of iterations. Default 1.
-    -x : Fixation percentage threshold. Default 0.
     -m : Maximum number of alignments for a read to be processed. Default 50.
     -s : Minimum score for Bowtie2 display. Default 0 (unscored).
     -v : N for N-fold cross-validation. Default 1 (no cross-validation).
     -c : Flag for continuous output bedgraphs. Default off.
     -S : Flag for strand-specific mode. Default off.
+    -r : Flag for read output mode with weights. Default off.
+    -l : Rate of fitting in reweighting. Default 1.
 
     -h : Display help message.
 
