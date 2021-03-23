@@ -5,7 +5,7 @@ kfilt=51
 L=250
 I=100
 s=""
-helpmessage="\nMultiMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]
+helpmessage="\nSmartMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]
 
 Inputs (required):
 -x Path to basename of Bowtie2 index for alignment
