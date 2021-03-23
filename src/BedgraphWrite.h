@@ -9,7 +9,8 @@
 #define BEDGRAPHWRITE_H_
 
 #include "gzstream.h"
-#include "MMCommon.h"
+
+#include "SMCommon.h"
 
 void writeBedgraphOutput(string bedgraph_filename);
 

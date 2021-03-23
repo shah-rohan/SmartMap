@@ -9,7 +9,8 @@
 #define BITOPS_H_
 
 #include <vector>
-#include "MMCommon.h"
+
+#include "SMCommon.h"
 
 using namespace std;
 

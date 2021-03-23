@@ -16,7 +16,8 @@
 #include <chrono>
 
 #include "gzstream.h"
-#include "MMCommon.h"
+
+#include "SMCommon.h"
 
 using namespace std;
 using namespace std::chrono;

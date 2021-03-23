@@ -16,10 +16,10 @@
 
 #include "BITOps.h"
 #include "LengthParse.h"
-#include "MMCommon.h"
 #include "ReadParse.h"
 #include "BedgraphWrite.h"
 #include "ReweightIterator.h"
+#include "SMCommon.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -133,8 +133,8 @@ int main(int argc, char* argv[])
 	readoutput = false;
 	fitrate = 1;
 
-	string helpmessage = "MultiMap for analysis of ambiguously mapping reads in ChIP-seq. Version 0.2.0.\n\n"
-			"Usage: MultiMap [options] [bed or bed.gz file input(s)]\n\n"
+	string helpmessage = "SmartMap for analysis of ambiguously mapping reads in next-generation sequencing. Version 1.0.0.\n\n"
+			"Usage: SmartMap [options] [bed or bed.gz file input(s)]\n\n"
 			"Required options:\n"
 			"-g : Genome length file listing all chromosomes and lengths. Chromosomes will appear in this order in output file.\n"
 			"-o : Output prefix used for output bedgraph and log files.\n\n"

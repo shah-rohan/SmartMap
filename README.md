@@ -1,16 +1,16 @@
-# MultiMap: Iterative Bayesian Analysis of Ambiguously Mapped Reads
+# SmartMap: Iterative Bayesian Analysis of Ambiguously Mapped Reads
 
-This tool is designed to analyze ambiguously mapped reads from paired-end short-read next-generation sequencing by using the alignment scores and the distribution of mapped reads genome-wide to iteratively reweight and refine the weights assigned to each alignment of each read. This tool can be used for both strand-nonspecific and strand-specific applications. In principle, single-end data can also be analyzed with the MultiMap tool, but the MultiMapPrep and MultiMapRNAPrep scripts do not support single-end analysis, though modification of these scripts to use single-end data is possible if desired.
+This tool is designed to analyze ambiguously mapped reads from paired-end short-read next-generation sequencing by using the alignment scores and the distribution of mapped reads genome-wide to iteratively reweight and refine the weights assigned to each alignment of each read. This tool can be used for both strand-nonspecific and strand-specific applications. In principle, single-end data can also be analyzed with the SmartMap tool, but the SmartMapPrep and SmartMapRNAPrep scripts do not support single-end analysis, though modification of these scripts to use single-end data is possible if desired.
 
-There are three components to the tool presented here: the MultiMapPrep and MultiMapRNAPrep bash scripts and the MultiMap compiled binary. The MultiMapPrep and MultiMapRNAPrep scripts serves to align the FASTQ files to the genome, filter the output file, and parse it into a BED file that can be used with the MultiMap binary, with and without strand information, respectively. The MultiMap binary is a compiled program written in C++ to analyze the alignment BED file produced by MultiMapPrep or MultiMapRNAPrep with the iterative Bayesian algorithm and produce a BEDGRAPH file of alignment weights across the genome, which can be treated as the weighted genome coverage BEDGRAPH file (with strand-specificity, if applicable).
+There are three components to the tool presented here: the SmartMapPrep and SmartMapRNAPrep bash scripts and the SmartMap compiled binary. The SmartMapPrep and SmartMapRNAPrep scripts serves to align the FASTQ files to the genome, filter the output file, and parse it into a BED file that can be used with the SmartMap binary, with and without strand information, respectively. The SmartMap binary is a compiled program written in C++ to analyze the alignment BED file produced by SmartMapPrep or SmartMapRNAPrep with the iterative Bayesian algorithm and produce a BEDGRAPH file of alignment weights across the genome, which can be treated as the weighted genome coverage BEDGRAPH file (with strand-specificity, if applicable).
 
 This tool is designed for use with Bowtie2 or Hisat2.
 
-## Documentation for MultiMapPrep
+## Documentation for SmartMapPrep
 
 ### Description
 
-The MultiMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:
+The SmartMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the SmartMap software. This is accomplished by:
 
 1. Aligning the FastQ files to the genome using Bowtie2 using the following settings:
    * End-to-end alignment with very fast preset
@@ -32,19 +32,19 @@ The MultiMapPrep script is used to align the FastQ files and prepare a BED file 
    * Mate alignment score (YS:i:)
 4. Split the reads into separate files based on the number of alignments per read.
 
-The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
+The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the SmartMap software to run the iterative reweight algorithm.
 
 ### Dependencies
 
-In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.
+In addition to standard Unix tools, including awk, sed, and gzip, the SmartMapPrep script requires the following to be installed and added to the PATH environment variable.
 
 * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
 
 We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested Bowtie2 v. 2.3.4.1.
 
-### Manual for MultiMapPrep
+### Manual for SmartMapPrep
 
-`MultiMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]`
+`SmartMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]`
 
 Inputs (required):
 
@@ -63,11 +63,11 @@ Options:
 
     -h Display help message
 
-## Documentation for MultiMapRNAPrep
+## Documentation for SmartMapRNAPrep
 
 ### Description
 
-The MultiMapRNAPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:
+The SmartMapRNAPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the SmartMap software. This is accomplished by:
 
 1. Aligning the FastQ files to the genome using Hisat2 using the following settings:
    * No discordant alignments
@@ -88,19 +88,19 @@ The MultiMapRNAPrep script is used to align the FastQ files and prepare a BED fi
    * Mate alignment score (YS:i:)
 4. Split the reads into separate files based on the number of alignments per read.
 
-The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight algorithm.
+The output files are a Gzipped file containing all alignments and a directory `splits` with unzipped files containing extended BED files of the alignments split by number of alignments per read, prepared for line counting or use with the SmartMap software to run the iterative reweight algorithm.
 
 ### Dependencies
 
-In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.
+In addition to standard Unix tools, including awk, sed, and gzip, the SmartMapPrep script requires the following to be installed and added to the PATH environment variable.
 
 * [Hisat2](https://daehwankimlab.github.io/hisat2/)
 
 We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested Hisat2 v. 2.1.0.
 
-### Manual for MultiMapRNAPrep
+### Manual for SmartMapRNAPrep
 
-`MultiMapRNAPrep [options] -x [Hisat2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]`
+`SmartMapRNAPrep [options] -x [Hisat2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]`
 
 Inputs (required):
 
@@ -117,31 +117,31 @@ Options:
 
     -h Display help message
 
-## Documentation for MultiMap
+## Documentation for SmartMap
 
-The MultiMap software serves to assign weights to each mapping of each read by an iterative Bayesian reweighting algorithm using the BED file(s) outputted by the MultiMapPrep script as an input. The output file is a Gzipped BEDGRAPH file of the genome-wide read weights analagous to a genome coverage read depth BEDGRAPH file. If run in strand-specific mode, the output file is a pair of Gzipped BEDGRAPH files of the genome-wide read weights, with one file per strand.
+The SmartMap software serves to assign weights to each mapping of each read by an iterative Bayesian reweighting algorithm using the BED file(s) outputted by the SmartMapPrep script as an input. The output file is a Gzipped BEDGRAPH file of the genome-wide read weights analagous to a genome coverage read depth BEDGRAPH file. If run in strand-specific mode, the output file is a pair of Gzipped BEDGRAPH files of the genome-wide read weights, with one file per strand.
 
 ### Dependencies
 
-The MultiMap binary has no dependencies in and of itself; however, building the MultiMap binary from source requires the following to be installed and added to the PATH environment variable.
+The SmartMap binary has no dependencies in and of itself; however, building the SmartMap binary from source requires the following to be installed and added to the PATH environment variable.
 
 * g++
 
-Additionally, the [gzstream](https://www.cs.unc.edu/Research/compgeom/gzstream/) library is required for building the MultiMap binary; this is included in the appropriate relative directory with the appropriate reference in the makefile. 
+Additionally, the [gzstream](https://www.cs.unc.edu/Research/compgeom/gzstream/) library is required for building the SmartMap binary; this is included in the appropriate relative directory with the appropriate reference in the makefile. 
 
 We have tested this software on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested g++ v. 7.5.0. 
 
-### Building MultiMap binary from source
+### Building SmartMap binary from source
 
-The source files for the MultiMap software are provided here. To build the MultiMap binary from source, from the main project directory, run the following command:
+The source files for the SmartMap software are provided here. To build the SmartMap binary from source, from the main project directory, run the following command:
 
 `make all`
 
-The MultiMap binary will appear in the "Default" directory. It can then be moved to the directory of interest or added to the PATH environment variable for use.
+The SmartMap binary will appear in the "Default" directory. It can then be moved to the directory of interest or added to the PATH environment variable for use.
 
-### Manual for MultiMap 
+### Manual for SmartMap 
 
-`MultiMap [options] -g [genome length file] -o [output prefix] [BED or BED.gz file input(s)]`
+`SmartMap [options] -g [genome length file] -o [output prefix] [BED or BED.gz file input(s)]`
 
 Inputs (required):
 

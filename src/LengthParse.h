@@ -13,7 +13,8 @@
 #include <string>
 #include <map>
 #include <iomanip>
-#include "MMCommon.h"
+
+#include "SMCommon.h"
 
 using namespace std;
 

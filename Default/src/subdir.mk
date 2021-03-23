@@ -7,25 +7,25 @@ CPP_SRCS += \
 ../src/BITOps.cpp \
 ../src/BedgraphWrite.cpp \
 ../src/LengthParse.cpp \
-../src/MultiMap.cpp \
 ../src/ReadParse.cpp \
-../src/ReweightIterator.cpp 
+../src/ReweightIterator.cpp \
+../src/SmartMap.cpp 
 
 OBJS += \
 ./src/BITOps.o \
 ./src/BedgraphWrite.o \
 ./src/LengthParse.o \
-./src/MultiMap.o \
 ./src/ReadParse.o \
-./src/ReweightIterator.o 
+./src/ReweightIterator.o \
+./src/SmartMap.o 
 
 CPP_DEPS += \
 ./src/BITOps.d \
 ./src/BedgraphWrite.d \
 ./src/LengthParse.d \
-./src/MultiMap.d \
 ./src/ReadParse.d \
-./src/ReweightIterator.d 
+./src/ReweightIterator.d \
+./src/SmartMap.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

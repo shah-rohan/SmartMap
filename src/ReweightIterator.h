@@ -9,7 +9,8 @@
 #define REWEIGHTITERATOR_H_
 
 #include <iostream>
-#include "MMCommon.h"
+
+#include "SMCommon.h"
 
 using namespace std;
 
