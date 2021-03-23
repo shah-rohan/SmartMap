@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>MultiMap</title>
+<title>SmartMap</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="./index_files/style.css">
 </head>
@@ -14,7 +14,7 @@
 		<h1>Multi<span style="color: #bf1300">Map</span></h1>
 		<a href="#intro">Introduction</a>
 		<button class="dropdown-btn"> 
-			<i class="fa fa-caret-down"></i>MultiMapPrep
+			<i class="fa fa-caret-down"></i>SmartMapPrep
 		</button>
 		<div class="dropdown-container">
 			<a href="#multimapprep">Description</a>
@@ -22,7 +22,7 @@
 			<a href="#mmp-man">Manual</a>
 		</div>
 		<button class="dropdown-btn"> 
-			<i class="fa fa-caret-down"></i>MultiMapRNAPrep
+			<i class="fa fa-caret-down"></i>SmartMapRNAPrep
 		</button>
 		<div class="dropdown-container">
 			<a href="#multimaprnaprep">Description</a>
@@ -30,7 +30,7 @@
 			<a href="#mmrp-man">Manual</a>
 		</div>
 		<button class="dropdown-btn"> 
-			<i class="fa fa-caret-down"></i>MultiMap
+			<i class="fa fa-caret-down"></i>SmartMap
 		</button>
 		<div class="dropdown-container">
 			<a href="#multimap">Description</a>
@@ -54,23 +54,23 @@
 		<h2 id = "intro"><h2>Introduction</h2>
 		<p>This tool is designed to analyze ambiguously mapped reads from paired-end short-read next-generation sequencing by using the alignment scores and the 
 		distribution of mapped reads genome-wide to iteratively reweight and refine the weights assigned to each alignment of each read. This tool can be used 
-		for both strand-nonspecific and strand-specific applications. In principle, single-end data can also be analyzed with the MultiMap tool, but the 
-		MultiMapPrep and MultiMapRNAPrep scripts do not support single-end analysis, though modification of these scripts to use single-end data is possible if 
+		for both strand-nonspecific and strand-specific applications. In principle, single-end data can also be analyzed with the SmartMap tool, but the 
+		SmartMapPrep and SmartMapRNAPrep scripts do not support single-end analysis, though modification of these scripts to use single-end data is possible if 
 		desired.</p>
 		
-		<p>There are three components to the tool presented here: the MultiMapPrep and MultiMapRNAPrep bash scripts and the MultiMap compiled binary. 
-		The MultiMapPrep and MultiMapRNAPrep scripts serves to align the FASTQ files to the genome, filter the output file, and parse it into a BED file 
-		that can be used with the MultiMap binary, with and without strand information, respectively. The MultiMap binary is a compiled program written in 
-		C++ to analyze the alignment BED file produced by MultiMapPrep or MultiMapRNAPrep with the iterative Bayesian algorithm and produce a BEDGRAPH file 
+		<p>There are three components to the tool presented here: the SmartMapPrep and SmartMapRNAPrep bash scripts and the SmartMap compiled binary. 
+		The SmartMapPrep and SmartMapRNAPrep scripts serves to align the FASTQ files to the genome, filter the output file, and parse it into a BED file 
+		that can be used with the SmartMap binary, with and without strand information, respectively. The SmartMap binary is a compiled program written in 
+		C++ to analyze the alignment BED file produced by SmartMapPrep or SmartMapRNAPrep with the iterative Bayesian algorithm and produce a BEDGRAPH file 
 		of alignment weights across the genome, which can be treated as the weighted genome coverage BEDGRAPH file (with strand-specificity, if applicable).</p>
 		
 		<p>This tool is designed for use with Bowtie2 or Hisat2.</p>
 
 		<hr>
 		
-		<h2 id = "multimapprep"><h2>Documentation for MultiMapPrep</h2>
+		<h2 id = "multimapprep"><h2>Documentation for SmartMapPrep</h2>
 		<h3 id = "mmp-desc"><h3>Description</h3>
-		<p>The MultiMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:</p>
+		<p>The SmartMapPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the SmartMap software. This is accomplished by:</p>
 		<ol>
 			<li>Aligning the FastQ files to the genome using Bowtie2 using the following settings:
 				<ul>
@@ -102,11 +102,11 @@
 			<li>Split the reads into separate files based on the number of alignments per read.</li>
 		</ol>
 		<p>The output files are a Gzipped file containing all alignments and a directory <code>splits</code> with unzipped files containing extended BED files 
-		of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight 
+		of the alignments split by number of alignments per read, prepared for line counting or use with the SmartMap software to run the iterative reweight 
 		algorithm.</p>
 
 		<h3 id="mmp-dep"><h3>Dependencies</h3>
-		<p>In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.</p>
+		<p>In addition to standard Unix tools, including awk, sed, and gzip, the SmartMapPrep script requires the following to be installed and added to the PATH environment variable.</p>
 		<ul>
 			<li><a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">Bowtie2</a></li>
 		</ul>
@@ -114,9 +114,9 @@
 		
 		<br>
 		
-		<h3 id="mmp-man">Manual for MultiMapPrep</h3>
+		<h3 id="mmp-man">Manual for SmartMapPrep</h3>
 		<div class="codebox">
-			<p>MultiMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]</p>
+			<p>SmartMapPrep [options] -x [Bowtie2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]</p>
 		</div>
 		
 		<p>Inputs (required):</p>
@@ -140,10 +140,10 @@
 		
 		<hr>
 		
-		<h2 id="multimaprnaprep">Documentation for MultiMapRNAPrep</h2>
+		<h2 id="multimaprnaprep">Documentation for SmartMapRNAPrep</h2>
 		<h3 id="mmrp-desc">Description</h3>
 		
-		<p>The MultiMapRNAPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the MultiMap software. This is accomplished by:</p>
+		<p>The SmartMapRNAPrep script is used to align the FastQ files and prepare a BED file output that is ready to be processed using the SmartMap software. This is accomplished by:</p>
 		<ol>
 			<li>Aligning the FastQ files to the genome using Hisat2 using the following settings:
 				<ul>
@@ -174,19 +174,19 @@
 			<li>Split the reads into separate files based on the number of alignments per read.</li>
 		</ol>
 		<p>The output files are a Gzipped file containing all alignments and a directory <code>splits</code> with unzipped files containing extended BED files 
-		of the alignments split by number of alignments per read, prepared for line counting or use with the MultiMap software to run the iterative reweight 
+		of the alignments split by number of alignments per read, prepared for line counting or use with the SmartMap software to run the iterative reweight 
 		algorithm.</p>
 		
 		<h3 id="mmrp-dep">Dependencies</h3>
-		<p>In addition to standard Unix tools, including awk, sed, and gzip, the MultiMapPrep script requires the following to be installed and added to the PATH environment variable.</p>
+		<p>In addition to standard Unix tools, including awk, sed, and gzip, the SmartMapPrep script requires the following to be installed and added to the PATH environment variable.</p>
 		<ul>
 		<li><a href="https://daehwankimlab.github.io/hisat2/">Hisat2</a></li>
 		</ul>
 		<p>We have tested this script on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested Hisat2 v. 2.1.0.</p>
 		
-		<h3 id="mmrp-man">Manual for MultiMapRNAPrep</h3>
+		<h3 id="mmrp-man">Manual for SmartMapRNAPrep</h3>
 		<div class="codebox">
-			<p>MultiMapRNAPrep [options] -x [Hisat2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]</p>
+			<p>SmartMapRNAPrep [options] -x [Hisat2 index] -o [output prefix] -1 [R1 fastq] -2 [R2 fastq]</p>
 		</div>
 		
 		<p>Inputs (required):</p>
@@ -208,39 +208,39 @@
 		
 		<hr>
 		
-		<h2 id="multimap">Documentation for MultiMap</h2>
+		<h2 id="multimap">Documentation for SmartMap</h2>
 		<h3 id="mm-desc">Description</h3>
 		
-		<p>The MultiMap software serves to assign weights to each mapping of each read by an iterative Bayesian reweighting algorithm using the BED file(s) 
-		outputted by the MultiMapPrep script as an input. The output file is a Gzipped BEDGRAPH file of the genome-wide read weights analagous to a genome 
+		<p>The SmartMap software serves to assign weights to each mapping of each read by an iterative Bayesian reweighting algorithm using the BED file(s) 
+		outputted by the SmartMapPrep script as an input. The output file is a Gzipped BEDGRAPH file of the genome-wide read weights analagous to a genome 
 		coverage read depth BEDGRAPH file. If run in strand-specific mode, the output file is a pair of Gzipped BEDGRAPH files of the genome-wide read weights, 
 		with one file per strand.</p>
 		
 		<h3 id="mm-dep">Dependencies</h3>
-		<p>The MultiMap binary has no dependencies in and of itself; however, building the MultiMap binary from source requires the following to be installed and added to the PATH environment variable.</p>
+		<p>The SmartMap binary has no dependencies in and of itself; however, building the SmartMap binary from source requires the following to be installed and added to the PATH environment variable.</p>
 		<ul>
 		<li>g++</li>
 		</ul>
 		
-		<p>Additionally, the <a href="https://www.cs.unc.edu/Research/compgeom/gzstream/">gzstream</a> library is required for building the MultiMap binary; this is included in the appropriate relative 
+		<p>Additionally, the <a href="https://www.cs.unc.edu/Research/compgeom/gzstream/">gzstream</a> library is required for building the SmartMap binary; this is included in the appropriate relative 
 		directory with the appropriate reference in the makefile.<p>
 		
 		<p>We have tested this software on Ubuntu LTS 14.04, 16.04, and 18.04. For the above listed tools, we have tested g++ v. 7.5.0.</p>
 		
-		<h3 id="mm-install">Building MultiMap Binary from Source</h3>
+		<h3 id="mm-install">Building SmartMap Binary from Source</h3>
 		
-		<p>The source files for the MultiMap software are provided here. To build the MultiMap binary from source, from the main project directory, run the following command:</p>
+		<p>The source files for the SmartMap software are provided here. To build the SmartMap binary from source, from the main project directory, run the following command:</p>
 		
 		<div class="codebox">
 			<p>make all</p>
 		</div>
 		
-		<p>The MultiMap binary will appear in the "Default" directory. It can then be moved to the directory of interest or added to the PATH environment variable for use.</p>
+		<p>The SmartMap binary will appear in the "Default" directory. It can then be moved to the directory of interest or added to the PATH environment variable for use.</p>
 		
-		<h3 id="mm-man">Manual for MultiMap</h3>
+		<h3 id="mm-man">Manual for SmartMap</h3>
 		
 		<div class="codebox">
-			<p>MultiMap [options] -g [genome length file] -o [output prefix] [BED or BED.gz file input(s)]</p>
+			<p>SmartMap [options] -g [genome length file] -o [output prefix] [BED or BED.gz file input(s)]</p>
 		</div>
 		
 		<p>Inputs (required):</p>
@@ -269,7 +269,7 @@
 		
 		<h2 id="contact">Contact and Acknowlegements</h2>
 		<p>Contact Rohan Shah (rohanshah@uchicago.edu) or Alex Ruthenburg (aruthenburg@uchicago.edu) with questions, comments, or issues.</p>
-		<p>Code and scripts for MultiMap is provided at the <a href="https://www.github.com/shah-rohan/MultiMap">MultiMap</a> GitHub repository.
+		<p>Code and scripts for SmartMap is provided at the <a href="https://www.github.com/shah-rohan/SmartMap">SmartMap</a> GitHub repository.
 		These tools, site, and associated GitHub repository were designed, written, and maintained by Rohan Shah.</p>
 		<p>To see our analysis workflow in more detail, please see our <a href="analysis.html">analysis page</a> or our <a href="https://dx.doi.org/10.5281/zenodo.4586639">Zenodo workflow</a>.</p>
 		<p>This Software is provided under a modified MIT License. Please cite and acknowledge this repository in any works utilizing this software.</p>
