@@ -6,6 +6,14 @@ There are three components to the tool presented here: the SmartMapPrep and Smar
 
 This tool is designed for use with Bowtie2 or Hisat2.
 
+## Conda Installation
+
+For simple installation of all the below tools with their necessary dependencies, a Conda package is available at https://anaconda.org/rohanshah/smartmap. To install, run the following command:
+
+`conda install -c rohanshah smartmap`
+
+After installation is complete, the commands below can be run as per the Manual for each tool.
+
 ## Documentation for SmartMapPrep
 
 ### Description
