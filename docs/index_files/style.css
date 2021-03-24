@@ -99,7 +99,6 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 	padding-bottom: 10px;
 	padding-right: 20px;
 	position: fixed;
-	overflow-y: scroll;
 	text-align:right;
 	color: #666666;
 	font:Arial, Helvetica, sans-serif;
