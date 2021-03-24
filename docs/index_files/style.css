@@ -93,7 +93,7 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 
 .sidebar1 {
 	float: left;
-	width: 220px;
+	width: 240px;
 	background-color: #FFFFFF;
 	padding-top:10px;
 	padding-bottom: 10px;
@@ -114,7 +114,7 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 .content {
 	padding: 10px 0;
 	width: auto;
-	margin-left: 240px;
+	margin-left: 260px;
 	margin-right: 0;
 	float: left;
 	color: #666666;
