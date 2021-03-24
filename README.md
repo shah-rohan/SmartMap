@@ -8,9 +8,9 @@ This tool is designed for use with Bowtie2 or Hisat2.
 
 ## Conda Installation
 
-For simple installation of all the below tools with their necessary dependencies, a Conda package is available at https://anaconda.org/rohanshah/smartmap. To install, run the following command:
+For simple installation of all the below tools with their necessary dependencies, a Conda package is available at [Bioconda](https://anaconda.org/bioconda/smartmap). run the following command with conda configured as per the [Bioconda instructions](https://bioconda.github.io/user/install.html):
 
-`conda install -c rohanshah smartmap`
+`conda install smartmap`
 
 After installation is complete, the commands below can be run as per the Manual for each tool.
 
