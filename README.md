@@ -1,5 +1,7 @@
 # SmartMap: Iterative Bayesian Analysis of Ambiguously Mapped Reads
 
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/smartmap/README.html)
+
 This tool is designed to analyze ambiguously mapped reads from paired-end short-read next-generation sequencing by using the alignment scores and the distribution of mapped reads genome-wide to iteratively reweight and refine the weights assigned to each alignment of each read. This tool can be used for both strand-nonspecific and strand-specific applications. In principle, single-end data can also be analyzed with the SmartMap tool, but the SmartMapPrep and SmartMapRNAPrep scripts do not support single-end analysis, though modification of these scripts to use single-end data is possible if desired.
 
 There are three components to the tool presented here: the SmartMapPrep and SmartMapRNAPrep bash scripts and the SmartMap compiled binary. The SmartMapPrep and SmartMapRNAPrep scripts serves to align the FASTQ files to the genome, filter the output file, and parse it into a BED file that can be used with the SmartMap binary, with and without strand information, respectively. The SmartMap binary is a compiled program written in C++ to analyze the alignment BED file produced by SmartMapPrep or SmartMapRNAPrep with the iterative Bayesian algorithm and produce a BEDGRAPH file of alignment weights across the genome, which can be treated as the weighted genome coverage BEDGRAPH file (with strand-specificity, if applicable).
